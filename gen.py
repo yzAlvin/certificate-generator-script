@@ -1,6 +1,6 @@
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.pagesizes import landscape
+from reportlab.lib.pagesizes import A5
+from reportlab.lib.pagesizes import portrait
 from reportlab.platypus import Image
 import csv
 
@@ -13,38 +13,31 @@ def import_data(data):
         firstname = row[1]
         level = row[2]
         group = row[3]
+        date = row[4]
         pdf_filename = level + '_' + surname + firstname + '.pdf'
-        generate_certificate(firstname, surname, level, group, pdf_filename)
+        generate_certificate(firstname, surname, level, group, date, pdf_filename)
 
-def generate_certificate(firstname, surname, level, group, pdf_filename):
+def generate_certificate(firstname, surname, level, group, date, pdf_filename):
     student_name = firstname + ' ' + surname
-    c = canvas.Canvas(pdf_filename, pagesize=landscape(letter))
+    c = canvas.Canvas(pdf_filename, pagesize=portrait(A5))
 
-    #header
-    c.setFont('Helvetica', 48, leading=None)
-    c.drawCentredString(415, 500, "Certificate of Completion")
-    c.setFont('Helvetica', 24, leading=None)
-    c.drawCentredString(415, 450, "This certificate is presented to:")
-    #student
-    c.setFont('Helvetica-Bold', 34, leading=None)
-    c.drawCentredString(415,395, student_name)
-    #for achieving
-    c.setFont('Helvetica', 24, leading=None)
-    c.drawCentredString(415, 350, "for achieving group:")
-    #group
-    c.setFont('Helvetica', 20, leading=None)
-    c.drawCentredString(415,310, group)
-    #in level..
-    c.setFont('Helvetica', 24, leading=None)
-    c.drawCentredString(415,270, "in level:")
+    #template
+    template = 'template.png'
+    c.drawImage(template, 0,0, width=None, height=None)
+    #name
+    c.setFont('Helvetica', 30, leading=None)
+    c.drawCentredString(215, 310, student_name)
     #level
     c.setFont('Helvetica', 20, leading=None)
-    c.drawCentredString(415, 230, level)
+    c.drawCentredString(178, 215, level)
+    #group
+    c.setFont('Helvetica', 20, leading=None)
+    c.drawCentredString(155, 190, group)
+    #date
+    c.setFont('Helvetica', 20, leading=None)
+    c.drawCentredString(105, 100, date)
 
-    #image
-    seal = 'seal.png'
-    c.drawImage(seal, 40,50, width=None, height=None)
-
+    #save
     c.showPage()
     print('writing')
     c.save()
